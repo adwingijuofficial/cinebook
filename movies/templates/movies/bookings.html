@@ -1,0 +1,28 @@
+<!-- movies/templates/movies/bookings.html -->
+{% extends "movies/base.html" %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<h1>My Bookings</h1>
+{% if bookings %}
+<div class="list-group">
+    {% for b in bookings %}
+    <div class="list-group-item bg-dark border-secondary mb-2">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h5>{{ b.showtime.movie.title }}</h5>
+                <p class="mb-1 text-muted">{{ b.showtime.start_time|date:"M d, Y \\a\\t g:i A" }}</p>
+                <small class="text-muted">Seats: {% for bs in b.booking_seats.all %}{{ bs.seat.row_number }}{{
+                    bs.seat.seat_number }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-secondary text-uppercase">{{ b.status }}</span>
+                <p class="mt-2 h5">${{ b.total_price }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center text-muted py-5">You haven't made any bookings yet</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,68 @@
+<!-- movies/templates/movies/booking.html -->
+{% extends "movies/base.html" %}
+{% load seat_extras %}
+{% load custom_filters %}
+{% block title %}Book - {{ showtime.movie.title }}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h3>{{ showtime.movie.title }}</h3>
+        <p class="text-muted">{{ showtime.start_time|date:"F j, Y \\a\\t g:i A" }}</p>
+
+        <div class="card p-3 mb-3">
+            <div class="text-center mb-3">
+                <div class="mx-auto"
+                    style="width:70%; height:8px; background:linear-gradient(90deg,transparent,#0d6efd,transparent); border-radius:999px">
+                </div>
+                <small class="text-muted">Screen</small>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="seat-grid">
+                    {% for row, cols in seat_grid.items %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div style="width:40px;">{{ forloop.counter0|add:65|chr }}</div>
+                        <div class="d-flex justify-content-center flex-wrap gap-2 flex-1">
+                            {% for column in cols %}
+                            {% comment %} We iterate actual columns using the cols dict {% endcomment %}
+                            {% endfor %}
+                            {% for i in max_col_range %}
+                            {% with s=seat_grid|get_item:row|get_item:i %}
+                            {% if s %}
+                            {% with sid=s.id|stringformat:"s" %}
+                            {% if sid in booked_seat_ids %}
+                            <button type="button" class="btn btn-sm btn-secondary disabled" title="Booked">X</button>
+                            {% else %}
+                            <input type="checkbox" class="btn-check" id="seat-{{ sid }}" name="seats" value="{{ sid }}">
+                            <label class="btn btn-sm btn-outline-primary" for="seat-{{ sid }}">{{ s.seat_number
+                                }}</label>
+                            {% endif %}
+                            {% endwith %}
+                            {% else %}
+                            <div style="width:36px"></div>
+                            {% endif %}
+                            {% endwith %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-success" type="submit">Proceed to Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card p-3">
+            <h5>Booking Summary</h5>
+            <p class="text-muted">Price per seat</p>
+            <p class="h4">${{ showtime.price }}</p>
+            <p class="text-muted">Selected seats will be shown here after submission</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

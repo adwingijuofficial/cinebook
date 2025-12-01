@@ -1,0 +1,33 @@
+<!-- movies/templates/movies/index.html -->
+{% extends "movies/base.html" %}
+{% block title %}Now Showing{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h1 class="display-5">Now Showing</h1>
+    <p class="text-muted">Book your tickets for the latest movies</p>
+</div>
+
+{% if movies %}
+<div class="row g-4">
+    {% for m in movies %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card h-100 text-dark">
+            {% if m.poster_url %}
+            <img src="{{ m.poster_url.url }}" alt="{{ m.title }}" class="card-img-top"
+                style="aspect-ratio:2/3; object-fit:cover;">
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ m.title|truncatechars:40 }}</h5>
+                <p class="mb-2 text-muted small">{{ m.genre }} {% if m.runtime %} • {{ m.runtime }}m{% endif %}</p>
+                <div class="mt-auto">
+                    <a href="{% url 'movies:movie_detail' m.id %}" class="btn btn-primary w-100">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">No movies available at the moment. Check back later!</div>
+{% endif %}
+{% endblock %}

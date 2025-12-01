@@ -1,0 +1,21 @@
+/* custom.css */
+body {
+    background: linear-gradient(135deg, #071025 0%, #0f1724 100%);
+    color: #e6eef8;
+}
+
+.card {
+    background-color: rgba(20, 24, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #f7c948, #ff7a59);
+    border: none;
+    color: #0b1220;
+    font-weight: 600;
+}
+
+.btn-outline-primary {
+    border-color: rgba(247, 201, 72, 0.15);
+}
