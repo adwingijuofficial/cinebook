@@ -11,6 +11,8 @@ urlpatterns = [
     path("movie/<uuid:movie_id>/", views.movie_detail, name="movie_detail"),
     path("booking/<uuid:showtime_id>/", views.booking_view, name="booking"),
     path("bookings/", views.my_bookings, name="bookings"),
+    path("payment/<uuid:showtime_id>/", views.payment_view, name="payment"),
+    path("payment/success/", views.payment_success, name="payment_success"),
 
     # ✅ AUTH ROUTES
     path("login/", views.login_view, name="login"),

@@ -72,9 +72,14 @@ class Booking(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     booking_date = models.DateTimeField(default=timezone.now)
 
+    razorpay_payment_id = models.CharField(max_length=255, null=True, blank=True)
+    razorpay_order_id = models.CharField(max_length=255, null=True, blank=True)
+    razorpay_signature = models.CharField(max_length=255, null=True, blank=True)
+
+
     def __str__(self):
         return f"Booking {self.id} - {self.user}"
-
+    
 class BookingSeat(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name="booking_seats")
     seat = models.ForeignKey(Seat, on_delete=models.PROTECT)

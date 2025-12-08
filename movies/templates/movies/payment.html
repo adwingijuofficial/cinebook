@@ -1,0 +1,78 @@
+{% extends "movies/base.html" %}
+{% load static %}
+
+{% block title %}Payment{% endblock %}
+{% block content %}
+
+<h2 class="mb-3">Payment</h2>
+
+<div class="card p-4 bg-dark text-light">
+    <h4>{{ showtime.movie.title }}</h4>
+    <p class="text-muted">{{ showtime.start_time|date:"F j, Y g:i A" }}</p>
+
+    <p><strong>Seats:</strong>
+        {% for s in seats %}
+        {{ s.row_number }}{{ s.seat_number }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
+    <p><strong>Total Amount:</strong> ₹ {{ total_price }}</p>
+
+    <button id="pay-btn" class="btn btn-primary w-100 mt-3">
+        Pay with Razorpay
+    </button>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.getElementById("pay-btn").onclick = function (e) {
+        e.preventDefault();
+
+        fetch("", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Accept": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                var options = {
+                    "key": data.key,
+                    "amount": data.amount,
+                    "currency": "INR",
+                    "name": "CineBook",
+                    "description": "Movie Ticket Payment",
+                    "order_id": data.order_id,
+
+                    "handler": function (response) {
+                        window.location.href =
+                            "/payment/success/?booking_id=" + data.booking_id +
+                            "&payment_id=" + response.razorpay_payment_id +
+                            "&order_id=" + response.razorpay_order_id +
+                            "&signature=" + response.razorpay_signature;
+                    },
+
+                    "theme": {
+                        "color": "#F37254"
+                    }
+                };
+
+                var rzp = new Razorpay(options);
+
+                rzp.on('payment.failed', function (response) {
+                    alert("Payment Failed: " + response.error.description);
+                });
+
+                rzp.open();
+            })
+            .catch(error => {
+                alert("Error: Unable to start payment.");
+                console.error("Payment Error:", error);
+            });
+    };
+</script>
+
+{% endblock %}
