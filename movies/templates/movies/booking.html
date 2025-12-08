@@ -22,21 +22,25 @@
                 <div class="seat-grid">
                     {% for row, cols in seat_grid.items %}
                     <div class="d-flex align-items-center mb-2">
-                        <div style="width:40px;">{{ forloop.counter0|add:65|chr }}</div>
+
+                        <!-- ROW NAME (A, B, C...) -->
+                        <div style="width:40px;">
+                            {{ row|add:64|chr }}
+                        </div>
+
                         <div class="d-flex justify-content-center flex-wrap gap-2 flex-1">
-                            {% for column in cols %}
-                            {% comment %} We iterate actual columns using the cols dict {% endcomment %}
-                            {% endfor %}
+
                             {% for i in max_col_range %}
-                            {% with s=seat_grid|get_item:row|get_item:i %}
-                            {% if s %}
-                            {% with sid=s.id|stringformat:"s" %}
+                            {% with seat=cols|get_item:i %}
+                            {% if seat %}
+                            {% with sid=seat.id|stringformat:"s" %}
                             {% if sid in booked_seat_ids %}
-                            <button type="button" class="btn btn-sm btn-secondary disabled" title="Booked">X</button>
+                            <button type="button" class="btn btn-sm btn-secondary disabled">X</button>
                             {% else %}
                             <input type="checkbox" class="btn-check" id="seat-{{ sid }}" name="seats" value="{{ sid }}">
-                            <label class="btn btn-sm btn-outline-primary" for="seat-{{ sid }}">{{ s.seat_number
-                                }}</label>
+                            <label class="btn btn-sm btn-outline-primary" for="seat-{{ sid }}">
+                                {{ seat.seat_number }}
+                            </label>
                             {% endif %}
                             {% endwith %}
                             {% else %}
@@ -44,6 +48,7 @@
                             {% endif %}
                             {% endwith %}
                             {% endfor %}
+
                         </div>
                     </div>
                     {% endfor %}

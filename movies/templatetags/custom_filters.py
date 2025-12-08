@@ -1,6 +1,5 @@
 from django import template
 
-
 register = template.Library()
 
 @register.filter
@@ -9,8 +8,6 @@ def to_char(value):
         return chr(int(value))
     except:
         return ''
-
-register = template.Library()
 
 @register.filter
 def get_item(dictionary, key):
